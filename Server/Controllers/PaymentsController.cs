@@ -2,6 +2,8 @@
 using Iyzipay.Model;
 using Iyzipay.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Server.Hubs;
 
 namespace Server.Controllers;
 
@@ -9,6 +11,14 @@ namespace Server.Controllers;
 [ApiController]
 public class PaymentsController : ControllerBase
 {
+
+    private readonly IHubContext<PayHub> _hubContext;
+
+    public PaymentsController(IHubContext<PayHub> hubContext)
+    {
+        _hubContext = hubContext;
+    }
+
     [HttpGet]
     public async Task<IActionResult> Pay()
     {
@@ -121,7 +131,7 @@ public class PaymentsController : ControllerBase
         {
             return BadRequest("Ödeme Başarısız Oldu");
         }
-
+        await _hubContext.Clients.All.SendAsync("Receive", data);
         return Ok();
     }
 }
