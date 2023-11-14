@@ -43,6 +43,9 @@ export class AppComponent {
 	pay() {
 		this.http.get("https://localhost:7099/api/Payments/Pay")
 			.subscribe((res:any) => {
+
+				this.signalR.registerTransactionId(res.conversationId)
+
 				const blob = new Blob([res.content], {type:'text/html'})
 				const obj = URL.createObjectURL(blob);
 				this.html = this.senitizer.bypassSecurityTrustResourceUrl(obj)

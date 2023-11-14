@@ -30,7 +30,7 @@ public class PaymentsController : ControllerBase
         };
         CreatePaymentRequest request = new CreatePaymentRequest();
         request.Locale = Locale.TR.ToString();
-        request.ConversationId = "123456789";
+        request.ConversationId = Guid.NewGuid().ToString();
         request.Price = "1";
         request.PaidPrice = "1.2";
         request.Currency = Currency.TRY.ToString();
@@ -112,7 +112,7 @@ public class PaymentsController : ControllerBase
 
         ThreedsInitialize threedsInitialize = ThreedsInitialize.Create(request, options);
 
-        return Ok(new { Content = threedsInitialize.HtmlContent });
+        return Ok(new { Content = threedsInitialize.HtmlContent, ConversationId = request.ConversationId });
     }
 
     [HttpPost]
@@ -131,7 +131,7 @@ public class PaymentsController : ControllerBase
         {
             return BadRequest("Ödeme Başarısız Oldu");
         }
-        await _hubContext.Clients.All.SendAsync("Receive", data);
+        await _hubContext.Clients.Client(PayHub.connections[data.ConversationId]).SendAsync("Receive", data);
         return Ok();
     }
 }

@@ -17,6 +17,11 @@ export class SignalRService {
     .catch((err:any) => {console.log(err)})
   }
 
+  registerTransactionId = (id:string) => {
+    this.hubConnection.invoke("RegisterTransaction", id)
+
+  }
+
   paymentResult = (status:any) => 
   {
     this.hubConnection.on("Receive", (res:any)=>{
