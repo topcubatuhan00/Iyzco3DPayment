@@ -12,7 +12,7 @@ builder.Services.AddCors(cfr =>
     cfr.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyHeader().AllowCredentials().AllowAnyMethod().SetIsOriginAllowed(policy => true);
-    })
+    });
 });
 
 var app = builder.Build();
